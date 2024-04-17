@@ -22,17 +22,13 @@ if [[ "$TERM" == "dumb" ]] || [[ "$TERM" == "eterm-color" ]]; then
 fi
 
 function preexec() {
+	# Set start to 
+	# calculate elapesed time
 	start=$(date +%s)
 }
 
 function precmd() {
-	# show last command name
-	if [[ "$is_emacs" == "false" ]]; then
-	    lastcmd=$(history -1 | cut -c8-)
-	    echo -ne "\e]2;$lastcmd\a\e]1;$lastcmd\a"
-	fi
-
-	# show elapsed time
+	# Calculate elapsed time
 	PROMPT=$(echo -n "$PROMPT" | sed -r 's/took [^ ]+ //g')
 	if [[ "$start" != "" ]]; then
 		end=$(date +%s)
@@ -67,7 +63,14 @@ autoload -U compinit && compinit
 unsetopt automenu
 
 # Fuzzy tab completion
-#zstyle ':completion:*' matcher-list 'r:[[:ascii:]]||[[:ascii:]]=** r:|=* m:{a-z\-}={A-Z\_}'
+zstyle ':completion:*' matcher-list \
+	'm:{[:lower:]}={[:upper:]}' \
+	'+r:|[._-]=* r:|=*' \
+	'+l:|=*'
+
+# Enable vi mode
+#bindkey -v
+#bindkey ^R history-incremental-search-backward 
 
 # Source custom files
 [[ -d "$HOME/.zshrc.d" ]] && for file in $HOME/.zshrc.d/*; do
