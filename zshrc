@@ -1,3 +1,10 @@
+# History
+HISTFILE="$HOME/.zsh_history"
+HISTSIZE=10000
+SAVEHIST=10000
+setopt SHARE_HISTORY
+
+# Load color definitions
 autoload -U colors && colors
 PROMPT="%{$fg_bold[blue]%}%1~"
 if [[ "$EUID" == "0" ]]; then
