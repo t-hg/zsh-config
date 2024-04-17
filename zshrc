@@ -7,8 +7,10 @@ setopt SHARE_HISTORY
 # Load color definitions
 autoload -Uz colors && colors
 
-# Prompt configuration
+# Prompt show current folder
 PROMPT="%{$fg_bold[blue]%}%1~"
+
+# Prompt show Git status
 autoload -Uz vcs_info
 setopt prompt_subst
 PROMPT="$PROMPT%{$fg_bold[magenta]%}\${vcs_info_msg_0_}"
@@ -17,6 +19,9 @@ zstyle ':vcs_info:*' unstagedstr '*'
 zstyle ':vcs_info:*' stagedstr '+'
 zstyle ':vcs_info:git:*' formats ' (%b%u%c)'
 zstyle ':vcs_info:git:*' actionformats ' (%b|%a%u%c)'
+precmd_functions+=(vcs_info)
+
+# Prompt show '%' for normal user, '#' for root
 if [[ "$EUID" == "0" ]]; then
 	PROMPT="$PROMPT %{$fg_bold[red]%}%#"
 else
@@ -24,22 +29,14 @@ else
 fi
 PROMPT="${PROMPT} %{$reset_color%}"
 
-is_emacs=false
-if [[ "$TERM" == "dumb" ]] || [[ "$TERM" == "eterm-color" ]]; then
-    is_emacs=true
-fi
-
-
-function preexec() {
-	# Set start to 
-	# calculate elapesed time
+# Prompt elapsed time begin counting
+function prompt_elapsed_time_start() {
 	start=$(date +%s)
 }
+preexec_functions+=(prompt_elapsed_time_start)
 
-function precmd() {
-	# Update git prompt
-	vcs_info
-
+# Prompt elapsed time stop counting, show and reset
+function prompt_elapsed_time_stop_reset() {
 	# Calculate elapsed time
 	PROMPT=$(echo -n "$PROMPT" | sed -r 's/took [^ ]+ //g')
 	if [[ "$start" != "" ]]; then
@@ -57,8 +54,36 @@ function precmd() {
 		fi
 		PROMPT="took %{$fg_bold[yellow]%}$formatted%{$reset_color%} $PROMPT"
 	fi
-	
 }
+precmd_functions+=(prompt_elapsed_time_stop_reset)
+
+# Enable vi mode
+setopt vi
+KEYTIMEOUT=1
+bindkey -v
+bindkey '^R' history-incremental-search-backward 
+bindkey '^H' backward-delete-char
+bindkey '^?' backward-delete-char
+
+# Change cursor
+# Normal mode: block
+# Insert mode: beam
+function zle-keymap-select () {
+	if [[ $KEYMAP == vicmd ]]; then
+		# the command mode for vi
+		echo -ne "\e[2 q"
+	else
+		# the insert mode for vi
+		echo -ne "\e[5 q"
+	fi
+}
+precmd_functions+=(zle-keymap-select)
+zle -N zle-keymap-select
+
+is_emacs=false
+if [[ "$TERM" == "dumb" ]] || [[ "$TERM" == "eterm-color" ]]; then
+    is_emacs=true
+fi
 
 # Colored output
 alias ls='ls --color=auto'
@@ -81,11 +106,8 @@ zstyle ':completion:*' matcher-list \
 	'+r:|[._-]=* r:|=*' \
 	'+l:|=*'
 
-# Enable vi mode
-#bindkey -v
-#bindkey ^R history-incremental-search-backward 
-
 # Source custom files
 [[ -d "$HOME/.zshrc.d" ]] && for file in $HOME/.zshrc.d/*; do
 	source "$file"
 done
+
