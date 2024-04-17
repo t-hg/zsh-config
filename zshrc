@@ -82,10 +82,20 @@ function zle-keymap-select () {
 precmd_functions+=(zle-keymap-select)
 zle -N zle-keymap-select
 
-is_emacs=false
-if [[ "$TERM" == "dumb" ]] || [[ "$TERM" == "eterm-color" ]]; then
-    is_emacs=true
-fi
+# Showing current command in the title can 
+# help when similar commands with different options
+# are running.
+function use_last_command_as_title() {
+	is_emacs=false
+	if [[ "$TERM" == "dumb" ]] || [[ "$TERM" == "eterm-color" ]]; then
+		is_emacs=true
+	fi
+	if [[ "$is_emacs" == "false" ]]; then
+		lastcmd="$1"
+		echo -ne "\e]2;$lastcmd\a\e]1;$lastcmd\a"
+	fi
+}
+preexec_functions+=(use_last_command_as_title)
 
 # Colored output
 alias ls='ls --color=auto'
