@@ -5,10 +5,18 @@ SAVEHIST=10000
 setopt SHARE_HISTORY
 
 # Load color definitions
-autoload -U colors && colors
+autoload -Uz colors && colors
 
-# Simple prompt
+# Prompt configuration
 PROMPT="%{$fg_bold[blue]%}%1~"
+autoload -Uz vcs_info
+setopt prompt_subst
+PROMPT="$PROMPT%{$fg_bold[magenta]%}\${vcs_info_msg_0_}"
+zstyle ':vcs_info:*' check-for-changes true
+zstyle ':vcs_info:*' unstagedstr '*'
+zstyle ':vcs_info:*' stagedstr '+'
+zstyle ':vcs_info:git:*' formats ' (%b%u%c)'
+zstyle ':vcs_info:git:*' actionformats ' (%b|%a%u%c)'
 if [[ "$EUID" == "0" ]]; then
 	PROMPT="$PROMPT %{$fg_bold[red]%}%#"
 else
@@ -21,6 +29,7 @@ if [[ "$TERM" == "dumb" ]] || [[ "$TERM" == "eterm-color" ]]; then
     is_emacs=true
 fi
 
+
 function preexec() {
 	# Set start to 
 	# calculate elapesed time
@@ -28,6 +37,9 @@ function preexec() {
 }
 
 function precmd() {
+	# Update git prompt
+	vcs_info
+
 	# Calculate elapsed time
 	PROMPT=$(echo -n "$PROMPT" | sed -r 's/took [^ ]+ //g')
 	if [[ "$start" != "" ]]; then
@@ -45,6 +57,7 @@ function precmd() {
 		fi
 		PROMPT="took %{$fg_bold[yellow]%}$formatted%{$reset_color%} $PROMPT"
 	fi
+	
 }
 
 # Colored output
