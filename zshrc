@@ -2,7 +2,9 @@
 HISTFILE="$HOME/.zsh_history"
 HISTSIZE=10000
 SAVEHIST=10000
-setopt SHARE_HISTORY
+# Write to the history file immediately,
+# not when the shell exits
+setopt INC_APPEND_HISTORY
 
 # Load color definitions
 autoload -Uz colors && colors
