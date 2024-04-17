@@ -64,9 +64,10 @@ alias ip='ip --color=auto'
 
 # Zsh completion
 autoload -U compinit && compinit
+unsetopt automenu
 
 # Fuzzy tab completion
-zstyle ':completion:*' matcher-list 'r:[[:ascii:]]||[[:ascii:]]=** r:|=* m:{a-z\-}={A-Z\_}'
+#zstyle ':completion:*' matcher-list 'r:[[:ascii:]]||[[:ascii:]]=** r:|=* m:{a-z\-}={A-Z\_}'
 
 # Source custom files
 [[ -d "$HOME/.zshrc.d" ]] && for file in $HOME/.zshrc.d/*; do
