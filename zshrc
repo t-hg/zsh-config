@@ -66,3 +66,9 @@ alias ip='ip --color=auto'
 # Fuzzy finder (Ctrl-r)
 [[ -n "$FZF_KEY_BINDINGS" ]] && source "$FZF_KEY_BINDINGS"
 
+# Zsh completion
+autoload -U compinit && compinit
+
+# Fuzzy tab completion
+zstyle ':completion:*' matcher-list 'r:[[:ascii:]]||[[:ascii:]]=** r:|=* m:{a-z\-}={A-Z\_}'
+
