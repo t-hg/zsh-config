@@ -63,3 +63,6 @@ alias egrep='egrep --color=auto'
 alias diff='diff --color=auto'
 alias ip='ip --color=auto'
 
+# Fuzzy finder (Ctrl-r)
+[[ -n "$FZF_KEY_BINDINGS" ]] && source "$FZF_KEY_BINDINGS"
+
