@@ -72,3 +72,7 @@ autoload -U compinit && compinit
 # Fuzzy tab completion
 zstyle ':completion:*' matcher-list 'r:[[:ascii:]]||[[:ascii:]]=** r:|=* m:{a-z\-}={A-Z\_}'
 
+# Source custom files
+[[ -d "$HOME/.zshrc.d" ]] && for file in $HOME/.zshrc.d/*; do
+	source "$file"
+done
