@@ -67,7 +67,10 @@ bindkey '^R' history-incremental-search-backward
 bindkey '^H' backward-delete-char
 bindkey '^?' backward-delete-char
 
-# Change cursor
+# Cursor color
+echo -ne "\e]12;gray\a"
+
+# Cursor shape
 # Normal mode: block
 # Insert mode: beam
 function zle-keymap-select () {
@@ -122,4 +125,3 @@ zstyle ':completion:*' matcher-list \
 [[ -d "$HOME/.zshrc.d" ]] && for file in $HOME/.zshrc.d/*; do
 	source "$file"
 done
-
