@@ -121,6 +121,9 @@ zstyle ':completion:*' matcher-list \
 	'+r:|[._-]=* r:|=*' \
 	'+l:|=*'
 
+# Keep the space after completion for some characters in zsh
+ZLE_REMOVE_SUFFIX_CHARS=""
+
 # Source custom files
 [[ -d "$HOME/.zshrc.d" ]] && for file in $HOME/.zshrc.d/*; do
 	source "$file"
