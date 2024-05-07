@@ -9,19 +9,22 @@ setopt INC_APPEND_HISTORY
 # Load color definitions
 autoload -Uz colors && colors
 
+# the prompt string is first subjected to parameter expansion, command
+# substitution and arithmetic expansion. 
+setopt PROMPT_SUBST
+
 # Prompt show current folder
 PROMPT="%{$fg_bold[blue]%}%1~"
 
 # Prompt show Git status
-autoload -Uz vcs_info
-setopt prompt_subst
-PROMPT="$PROMPT%{$fg_bold[magenta]%}\${vcs_info_msg_0_}"
-zstyle ':vcs_info:*' check-for-changes true
-zstyle ':vcs_info:*' unstagedstr '*'
-zstyle ':vcs_info:*' stagedstr '+'
-zstyle ':vcs_info:git:*' formats ' (%b%u%c)'
-zstyle ':vcs_info:git:*' actionformats ' (%b|%a%u%c)'
-precmd_functions+=(vcs_info)
+if [[ -n "$GIT_PROMPT" ]]; then
+	source "$GIT_PROMPT"
+	GIT_PS1_SHOWDIRTYSTATE=1
+	GIT_PS1_SHOWSTASHSTATE=1
+	GIT_PS1_SHOWUNTRACKEDFILES=1
+	GIT_PS1_SHOWUPSTREAM=1
+	PROMPT="$PROMPT%{$fg_bold[magenta]%}\$(__git_ps1 \" (%s)\")"
+fi
 
 # Prompt show '%' for normal user, '#' for root
 if [[ "$EUID" == "0" ]]; then
