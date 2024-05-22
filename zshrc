@@ -51,9 +51,9 @@ function prompt_elapsed_time_stop_reset() {
 		if [[ $elapsed -eq 0 ]]; then
     		return 0
 		elif [[ $elapsed -gt 3600 ]]; then
-    		formatted=$(date -d@${elapsed} -u +%-Hh%-Mm%-Ss)
+			formatted="$(((elapsed / 3600) % 60))h$(((elapsed / 60) % 60))m$((elapsed % 60))s"
 		elif [[ $elapsed -gt 60 ]]; then
-    		formatted=$(date -d@${elapsed} -u +%-Mm%-Ss)
+			formatted="$(((elapsed / 60) % 60))m$((elapsed % 60))s"
 		else
     		formatted=${elapsed}s
 		fi
@@ -104,12 +104,16 @@ function use_last_command_as_title() {
 preexec_functions+=(use_last_command_as_title)
 
 # Colored output
-alias ls='ls --color=auto'
-alias grep='grep --color=auto'
-alias fgrep='fgrep --color=auto'
-alias egrep='egrep --color=auto'
-alias diff='diff --color=auto'
-alias ip='ip --color=auto'
+if [[ "$(uname)" == "OpenBSD" ]]; then
+	test -f /usr/local/bin/colorls && alias ls='colorls -G'
+else
+	alias ls='ls --color=auto'
+	alias grep='grep --color=auto'
+	alias fgrep='fgrep --color=auto'
+	alias egrep='egrep --color=auto'
+	alias diff='diff --color=auto'
+	alias ip='ip --color=auto'
+fi
 
 # Fuzzy finder (Ctrl-r)
 [[ -n "$FZF_KEY_BINDINGS" ]] && source "$FZF_KEY_BINDINGS"
