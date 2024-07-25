@@ -118,10 +118,6 @@ fi
 # Fuzzy finder (Ctrl-r)
 [[ -n "$FZF_KEY_BINDINGS" ]] && source "$FZF_KEY_BINDINGS"
 
-# Zsh completion
-autoload -U compinit && compinit
-unsetopt automenu
-
 # Fuzzy tab completion
 zstyle ':completion:*' matcher-list \
 	'm:{[:lower:]}={[:upper:]}' \
@@ -135,3 +131,8 @@ ZLE_REMOVE_SUFFIX_CHARS=""
 [[ -d "$HOME/.zshrc.d" ]] && for file in $HOME/.zshrc.d/*; do
 	source "$file"
 done
+
+# Zsh completion
+autoload -U compinit && compinit
+unsetopt automenu
+
