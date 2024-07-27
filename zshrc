@@ -1,7 +1,7 @@
 # History
 HISTFILE="$HOME/.zsh_history"
-HISTSIZE=10000
-SAVEHIST=10000
+HISTSIZE=1000
+SAVEHIST=1000
 # Write to the history file immediately,
 # not when the shell exits
 setopt INC_APPEND_HISTORY
@@ -133,6 +133,7 @@ ZLE_REMOVE_SUFFIX_CHARS=""
 done
 
 # Zsh completion
-autoload -U compinit && compinit
 unsetopt automenu
-
+autoload -Uz compinit
+[ "$(find ~/.zcompdump -mtime +1)" ] && compinit
+compinit -C
